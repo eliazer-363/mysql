@@ -1,0 +1,98 @@
+MySQL Shell 8.0.26
+
+Copyright (c) 2016, 2021, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect root@localhost
+Creating a session to 'root@localhost'
+Fetching schema names for autocompletion... Press ^C to stop.
+Your MySQL connection id is 9 (X protocol)
+Server version: 8.0.26 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:33060+ ssl  SQL > use bikedb;
+Default schema set to `bikedb`.
+Fetching table and column names from `bikedb` for auto-completion... Press ^C to stop.
+SQL > create table `bike`(Id int (11) , Name varchar(15) , Type int(11) , Status varchar(237) , Comapny int (11) , primary key(Id) ); 
+MySQL  localhost:33060+ ssl  bikedb  SQL > describe bike;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| ID      | int          | NO   | PRI | NULL    |       |
+| Name    | varchar(256) | YES  |     | NULL    |       |
+| Type    | int          | YES  |     | NULL    |       |
+| Status  | varchar(256) | YES  |     | NULL    |       |
+| company | int          | YES  |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+5 rows in set (0.0019 sec)
++----+-----------------+------+----------+---------+
+| ID | Name            | Type | Status   | company |
++----+-----------------+------+----------+---------+
+|  1 | BMW             |   10 | Roadster |      11 |
+|  2 | Ducati          |   20 | Panigale |      12 |
+|  3 | Harley-Davidson |   30 | Iron 883 |      13 |
++----+-----------------+------+----------+---------+
+3 rows in set (0.0004 sec)
+create table `Company`(Id int (11) , Name varchar(15) , Origin varchar(11) ,  found  int(11) , Primary key (Id));
+Query OK, 0 rows affected, 2 warnings (0.9113 sec)
+ MySQL  localhost:33060+ ssl  bikedb  SQL > select * from company;
++----+-----------------+---------+-------+
+| ID | Name            | Origin  | Found |
++----+-----------------+---------+-------+
+|  1 | BMW             | Germany |  1916 |
+|  2 | Ducati          | Italy   |  1926 |
+|  3 | Harley-Davidson | USA     |  1903 |
++----+-----------------+---------+-------+
+3 rows in set (0.0005 sec)
+sql> create table `Country`(Id int (11) , Name varchar(15) ,  Primary key (Id));
+Query OK, 0 rows affected, 1 warning (0.4389 sec)
+ MySQL  localhost:33060+ ssl  bikedb  SQL > select * from country;
++----+---------+
+| ID | Name    |
++----+---------+
+|  1 | Germany |
+|  2 | Italy   |
+|  3 | USA     |
++----+---------+
+3 rows in set (0.0005 sec)
+
+
+ MySQL  localhost:33060+ ssl  bikedb  SQL > select bike.ID,bike.Name,country.Name As country,company.Found from bike inner join country USING (ID) inner join company USING (ID) ORDER BY ID;
++----+-----------------+---------+-------+
+| ID | Name            | country | Found |
++----+-----------------+---------+-------+
+|  1 | BMW             | Germany |  1916 |
+|  2 | Ducati          | Italy   |  1926 |
+|  3 | Harley-Davidson | USA     |  1903 |
++----+-----------------+---------+-------+
+3 rows in set (0.0006 sec)
+ 
+
+
+
+MySQL  localhost:33060+ ssl  bikedb  SQL > select bike.Status,country.Name As country from bike inner join country on country.ID=bike.ID;
++----------+---------+
+| Status   | country |
++----------+---------+
+| Roadster | Germany |
+| Panigale | Italy   |
+| Iron 883 | USA     |
++----------+---------+
+3 rows in set (0.0005 sec)
+
+
+
+
+ MySQL  localhost:33060+ ssl  bikedb  SQL > select country.Name As country,company.Name As company from country inner join company on company.ID=country.ID;
++---------+-----------------+
+| country | company         |
++---------+-----------------+
+| Germany | BMW             |
+| Italy   | Ducati          |
+| USA     | Harley-Davidson |
++---------+-----------------+
+3 rows in set (0.0006 sec)
+ MySQL  localhost:33060+ ssl  bikedb  SQL >
